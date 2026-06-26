@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0e1a">
+<title>Daily Track · Eastbox</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e1a;
+  --card: #14233c;
+  --card-light: #1a2d50;
+  --card-elev: #1f3458;
+  --border: #2a3a5c;
+  --border-strong: #3d527a;
+  --orange: #ea8d49;
+  --orange-dim: #b06d38;
+  --orange-soft: rgba(234, 141, 73, 0.12);
+  --text: #ffffff;
+  --text-2: #a0a8b8;
+  --text-3: #6c7691;
+  --red: #ff5252;
+  --blue: #4d94ff;
+  --green: #43d977;
+  --yellow: #ffc857;
+  --purple: #b87fff;
+  --cyan: #4ed4e7;
+  --gray: #6c7691;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg); color: var(--text);
+  font-size: 15px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+body { min-height: 100vh; padding-bottom: 110px; }
+.app-header {
+  background: var(--bg); padding: 18px 20px 8px;
+  position: sticky; top: 0; z-index: 100;
+  border-bottom: 1px solid var(--border);
+}
+.app-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; letter-spacing: 1.5px; line-height: 1;
+}
+.app-title .accent { color: var(--orange); }
+.app-date {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--text-3);
+  margin-top: 4px; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.container { max-width: 540px; margin: 0 auto; padding: 16px 16px; }
+.section-header { margin: 22px 0 14px; padding: 0 4px; }
+.section-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 2px; color: var(--orange);
+  text-transform: uppercase; font-weight: 500;
+}
+.section-tag::before {
+  content: ''; display: inline-block; width: 6px; height: 6px;
+  background: var(--orange); border-radius: 50%;
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px; letter-spacing: 1px;
+  margin-top: 8px; line-height: 1;
+}
+.section-sub { color: var(--text-3); font-size: 13px; margin-top: 6px; font-style: italic; }
+.card {
+  background: var(--card); border-radius: 16px;
+  padding: 18px 16px; margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+.card-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+.card-icon {
+  width: 38px; height: 38px; background: var(--card-elev);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0; border: 1px solid var(--border-strong);
+}
+.card-titles { flex: 1; padding-top: 2px; }
+.card-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 1.5px; color: var(--text);
+  text-transform: uppercase; font-weight: 500; line-height: 1.3;
+}
+.card-helper { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.intro-box {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 14px; padding: 16px; margin-bottom: 12px;
+}
+.intro-box textarea {
+  width: 100%; background: transparent;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px; padding: 12px; color: var(--text);
+  font-family: inherit; font-size: 13px; resize: vertical; min-height: 70px;
+}
+.intro-box textarea::placeholder { color: var(--text-3); font-style: italic; }
+.intro-box textarea:focus { outline: none; border-color: var(--orange); }
+.counter {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--card-elev); border-radius: 14px; padding: 12px;
+  border: 1px solid var(--border-strong);
+}
+.counter-btn {
+  width: 56px; height: 56px; background: var(--card);
+  border: 1px solid var(--border-strong); border-radius: 10px;
+  color: var(--text); font-size: 24px; font-weight: 300;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-family: inherit; transition: all 0.1s;
+}
+.counter-btn:active { background: var(--orange); border-color: var(--orange); transform: scale(0.95); }
+.counter-value {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 56px; color: var(--text); letter-spacing: 1px; line-height: 1;
+}
+.counter-value .unit { font-size: 22px; color: var(--text-3); margin-left: 2px; }
+.emoji-group { display: grid; gap: 8px; }
+.emoji-group.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.emoji-group.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.emoji-group.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.emoji-group.cols-2 { grid-template-columns: repeat(2, 1fr); }
+.emoji-btn { display: block; cursor: pointer; position: relative; }
+.emoji-btn input { position: absolute; opacity: 0; pointer-events: none; }
+.emoji-btn-inner {
+  background: var(--card-elev); border: 1px solid var(--border-strong);
+  border-radius: 12px; padding: 14px 6px 10px; text-align: center;
+  transition: all 0.15s; min-height: 72px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+}
+.emoji-btn-emoji { font-size: 26px; line-height: 1; }
+.emoji-btn-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--text-2); font-weight: 500; line-height: 1.2;
+}
+.emoji-btn input:checked + .emoji-btn-inner {
+  border-color: var(--orange); background: var(--orange-soft);
+  box-shadow: 0 0 0 1px var(--orange);
+}
+.emoji-btn input:checked + .emoji-btn-inner .emoji-btn-label { color: var(--orange); }
+.emoji-btn:active .emoji-btn-inner { transform: scale(0.97); }
+.segmented { display: flex; align-items: center; gap: 12px; }
+.segmented-value {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 36px; line-height: 1; min-width: 50px;
+}
+.segmented-value .denom { font-size: 14px; color: var(--text-3); }
+.segmented-bars { display: flex; gap: 6px; flex: 1; }
+.segmented-bar {
+  flex: 1; height: 14px; background: var(--card-elev);
+  border: 1px solid var(--border); border-radius: 4px;
+  cursor: pointer; transition: all 0.1s;
+}
+.segmented-bar.active { background: var(--orange); border-color: var(--orange); }
+.segmented-bar:active { transform: scale(0.95); }
+.drops {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 8px;
+}
+.drop {
+  background: var(--card-elev); border: 1px solid var(--border-strong);
+  border-radius: 10px; padding: 12px 4px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.1s; min-height: 50px;
+}
+.drop svg { width: 22px; height: 22px; fill: var(--text-3); }
+.drop.active { background: var(--orange-soft); border-color: var(--orange); }
+.drop.active svg { fill: var(--orange); }
+.drop:active { transform: scale(0.92); }
+.drops-label {
+  text-align: center; font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--text-3); letter-spacing: 1px;
+}
+.drops-label .val { color: var(--text); font-weight: 600; }
+.slider-wrap {
+  background: var(--card-elev); border-radius: 12px;
+  padding: 16px 14px 10px; border: 1px solid var(--border-strong);
+}
+.slider-top {
+  display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px;
+}
+.slider-val { font-family: 'Bebas Neue', sans-serif; font-size: 36px; line-height: 1; }
+.slider-val .denom { font-size: 14px; color: var(--text-3); margin-left: 2px; }
+.slider-hint {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; letter-spacing: 1.5px; color: var(--text-3); text-transform: uppercase;
+}
+.slider-track {
+  position: relative; height: 6px; background: var(--card);
+  border-radius: 3px; margin: 0 6px;
+}
+.slider-fill {
+  position: absolute; left: 0; top: 0; height: 100%;
+  background: var(--orange); border-radius: 3px;
+}
+input[type="range"].slider-input {
+  position: absolute; top: -10px; left: -6px; right: -6px;
+  width: calc(100% + 12px); height: 26px;
+  -webkit-appearance: none; appearance: none;
+  background: transparent; outline: none; margin: 0; padding: 0;
+}
+input[type="range"].slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--orange); cursor: pointer; border: 3px solid var(--bg);
+  box-shadow: 0 2px 8px rgba(234,141,73,0.5);
+}
+input[type="range"].slider-input::-moz-range-thumb {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--orange); cursor: pointer; border: 3px solid var(--bg);
+  box-shadow: 0 2px 8px rgba(234,141,73,0.5);
+}
+.slider-ticks {
+  display: flex; justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text-3); margin-top: 8px; padding: 0 6px;
+}
+textarea, input[type="text"] {
+  width: 100%; background: var(--card-elev);
+  border: 1px solid var(--border-strong); border-radius: 12px;
+  padding: 13px 14px; color: var(--text);
+  font-family: inherit; font-size: 14px; resize: vertical;
+}
+textarea::placeholder, input[type="text"]::placeholder { color: var(--text-3); font-style: italic; }
+textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--orange); }
+.activity-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.activity-card { position: relative; cursor: pointer; }
+.activity-card input { position: absolute; opacity: 0; pointer-events: none; }
+.activity-card-inner {
+  background: var(--card-elev); border: 1px solid var(--border-strong);
+  border-radius: 12px; padding: 14px 14px 12px;
+  position: relative; min-height: 90px; transition: all 0.15s;
+}
+.activity-card-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 1px; line-height: 1.1;
+}
+.activity-card-sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; letter-spacing: 0.8px;
+  color: var(--text-3); text-transform: uppercase;
+  margin-top: 4px; line-height: 1.2;
+}
+.activity-card-bar { width: 36px; height: 3px; border-radius: 2px; margin-top: 10px; }
+.activity-card-check {
+  position: absolute; top: 14px; right: 14px;
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--border-strong); border-radius: 50%; transition: all 0.15s;
+}
+.activity-card input:checked + .activity-card-inner {
+  border-color: var(--orange); background: var(--orange-soft);
+}
+.activity-card input:checked + .activity-card-inner .activity-card-check {
+  background: var(--orange); border-color: var(--orange);
+  box-shadow: inset 0 0 0 3px var(--card);
+}
+.activity-card:active .activity-card-inner { transform: scale(0.98); }
+.bar-red { background: var(--red); }
+.bar-blue { background: var(--blue); }
+.bar-green { background: var(--green); }
+.bar-yellow { background: var(--yellow); }
+.bar-purple { background: var(--purple); }
+.bar-cyan { background: var(--cyan); }
+.bar-gray { background: var(--gray); }
+.bar-orange { background: var(--orange); }
+.conditional { display: none; margin-top: 10px; }
+.conditional.active { display: block; animation: fadeIn 0.2s ease-out; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.btn-row { display: grid; gap: 8px; }
+.btn-row.cols-4 { grid-template-columns: repeat(4, 1fr); }
+.btn-row.cols-3 { grid-template-columns: repeat(3, 1fr); }
+.btn-row.cols-5 { grid-template-columns: repeat(5, 1fr); }
+.btn-pill { display: block; cursor: pointer; position: relative; }
+.btn-pill input { position: absolute; opacity: 0; pointer-events: none; }
+.btn-pill-inner {
+  background: var(--card-elev); border: 1px solid var(--border-strong);
+  border-radius: 10px; padding: 10px 6px; text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase;
+  color: var(--text-2); transition: all 0.15s;
+  min-height: 42px; display: flex; align-items: center; justify-content: center;
+  font-weight: 500; line-height: 1.1;
+}
+.btn-pill input:checked + .btn-pill-inner {
+  border-color: var(--orange); background: var(--orange-soft); color: var(--orange);
+}
+.btn-pill:active .btn-pill-inner { transform: scale(0.96); }
+.tip-box {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px; margin-top: 20px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.tip-icon {
+  color: var(--orange);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px; font-weight: bold;
+}
+.tip-text { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+.tip-text b { color: var(--orange); }
+.submit-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(180deg, rgba(10,14,26,0) 0%, var(--bg) 30%);
+  padding: 20px 16px calc(14px + env(safe-area-inset-bottom));
+  z-index: 99;
+}
+.submit-btn {
+  width: 100%; max-width: 540px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--text); color: var(--bg); border: none;
+  padding: 18px 24px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px; letter-spacing: 1.5px;
+  border-radius: 14px; cursor: pointer; transition: transform 0.1s;
+  box-shadow: 0 4px 20px rgba(255,255,255,0.1);
+}
+.submit-btn:active { transform: scale(0.98); }
+.submit-btn svg { width: 20px; height: 20px; }
+.toast {
+  position: fixed; bottom: 110px; left: 16px; right: 16px;
+  background: var(--card-elev); border: 1px solid var(--orange);
+  color: var(--text); padding: 14px 16px; border-radius: 12px;
+  font-size: 13px; text-align: center; z-index: 200;
+  transform: translateY(20px); opacity: 0; pointer-events: none;
+  transition: all 0.2s; font-weight: 500;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.error { border-color: var(--red); }
+.app-footer {
+  text-align: center; font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text-3); letter-spacing: 1.5px;
+  margin: 24px 0 8px; text-transform: uppercase;
+}
+.error-screen {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 80vh; text-align: center; padding: 40px 20px;
+}
+.error-screen .error-icon {
+  font-size: 64px; margin-bottom: 24px; opacity: 0.6;
+}
+.error-screen h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px; letter-spacing: 1px; margin-bottom: 12px;
+}
+.error-screen p {
+  color: var(--text-2); font-size: 14px; max-width: 320px; line-height: 1.6;
+}
+.error-screen .accent { color: var(--orange); }
+.hidden { display: none !important; }
+@media (min-width: 600px) {
+  .container { padding: 20px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ÉCRAN ERREUR (si pas d'athlète valide) -->
+<div id="errorScreen" class="error-screen hidden">
+  <div class="error-icon">🔒</div>
+  <h1>URL <span class="accent">INVALIDE</span></h1>
+  <p>Cette page n'est pas accessible directement.<br><br>
+  Si tu es un athlète Eastbox, contacte <b>Coach Ron</b> pour récupérer ton lien personnel.</p>
+</div>
+
+<!-- ÉCRAN PRINCIPAL (caché tant qu'on n'a pas validé l'athlète) -->
+<div id="mainApp" class="hidden">
+
+<header class="app-header">
+  <div style="max-width: 540px; margin: 0 auto;">
+    <div class="app-title">TRACKING <span class="accent" id="athleteName">—</span></div>
+    <div class="app-date" id="todayDate"></div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- INTRO -->
+  <div class="section-header">
+    <div class="section-tag">Avant tout</div>
+    <h2 class="section-title">QUELQUE CHOSE QUE JE DOIS SAVOIR ?</h2>
+    <p class="section-sub">Je coache des humains, pas des machines. Stress, sommeil pourri, motivation, un truc perso... dis-le moi.</p>
+  </div>
+  <div class="intro-box">
+    <textarea id="intro" placeholder="Optionnel - ce que tu veux que je sache avant de lire ta journée..."></textarea>
+  </div>
+
+  <!-- BILAN JOURNEE -->
+  <div class="section-header">
+    <div class="section-tag">Bilan journée</div>
+    <h2 class="section-title">LA RÉCUP &amp; LE QUOTIDIEN</h2>
+    <p class="section-sub">L'état de la machine avant d'attaquer.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">🌙</div>
+      <div class="card-titles">
+        <div class="card-label">Sommeil</div>
+        <div class="card-helper">Combien d'heures ?</div>
+      </div>
+    </div>
+    <div class="counter">
+      <button type="button" class="counter-btn" id="sleepMinus">−</button>
+      <div class="counter-value"><span id="sleepVal">7</span><span class="unit">h</span></div>
+      <button type="button" class="counter-btn" id="sleepPlus">+</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">💤</div>
+      <div class="card-titles">
+        <div class="card-label">Qualité du sommeil</div>
+      </div>
+    </div>
+    <div class="emoji-group cols-4">
+      <label class="emoji-btn"><input type="radio" name="sleepQuality" value="Mauvaise"><div class="emoji-btn-inner"><div class="emoji-btn-emoji">😪</div><div class="emoji-btn-label">Mauvaise</div></div></label>
+      <label class="emoji-btn"><input type="radio" name="sleepQuality" value="Moyenne"><div class="emoji-btn-inner"><div class="emoji-btn-emoji">😐</div><div class="emoji-btn-label">Moyenne</div></div></label>
+      <label class="emoji-btn"><input type="radio" name="sleepQuality" value="Bonne" checked><div class="emoji-btn-inner"><div class="emoji-btn-emoji">🙂</div><div class="emoji-btn-label">Bonne</div></div></label>
+      <label class="emoji-btn"><input type="radio" name="sleepQuality" value="Top"><div class="emoji-btn-inner"><div class="emoji-btn-emoji">😄</div><div class="emoji-btn-label">Top</div></div></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">☀️</div>
+      <div class="card-titles">
+        <div class="card-label">Forme au réveil</div>
+        <div class="card-helper">Comment tu te lèves ?</div>
+      </div>
+    </div>
+    <div class="segmented" data-segmented="wakeForm" data-max="5" data-default="3">
+      <div class="segmented-value"><span class="num">3</span><span class="denom">/5</span></div>
+      <div class="segmented-bars">
+        <div class="segmented-bar" data-val="1"></div>
+        <div class="segmented-bar" data-val="2"></div>
+        <div class="segmented-bar" data-val="3"></div>
+        <div class="segmented-bar" data-val="4"></div>
+        <div class="segmented-bar" data-val="5"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">🩹</div>
+      <div class="card-titles">
+        <div class="card-label">Douleurs / Bobos</div>
+        <div class="card-helper">Optionnel</div>
+      </div>
+    </div>
+    <input type="text" id="pain" placeholder="épaule, poignet, RAS...">
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">🍴</div>
+      <div class="card-titles">
+        <div class="card-label">Nutrition</div>
+        <div class="card-helper">Comment tu as mangé ?</div>
+      </div>
+    </div>
+    <div class="emoji-group cols-3">
+      <label class="emoji-btn"><input type="radio" name="nutrition" value="Hors cadre"><div class="emoji-btn-inner"><div class="emoji-btn-emoji">🍔</div><div class="emoji-btn-label">Hors cadre</div></div></label>
+      <label class="emoji-btn"><input type="radio" name="nutrition" value="Correcte"><div class="emoji-btn-inner"><div class="emoji-btn-emoji">🥖</div><div class="emoji-btn-label">Correcte</div></div></label>
+      <label class="emoji-btn"><input type="radio" name="nutrition" value="Carrée"><div class="emoji-btn-inner"><div class="emoji-btn-emoji">🥗</div><div class="emoji-btn-label">Carrée</div></div></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">💧</div>
+      <div class="card-titles">
+        <div class="card-label">Hydratation</div>
+        <div class="card-helper">Tape pour ajouter — chaque goutte = ~0.5L</div>
+      </div>
+    </div>
+    <div class="drops" id="dropsContainer">
+      <div class="drop" data-val="1"><svg viewBox="0 0 24 24"><path d="M12 2.5s-7 8.5-7 13a7 7 0 1 0 14 0c0-4.5-7-13-7-13z"/></svg></div>
+      <div class="drop" data-val="2"><svg viewBox="0 0 24 24"><path d="M12 2.5s-7 8.5-7 13a7 7 0 1 0 14 0c0-4.5-7-13-7-13z"/></svg></div>
+      <div class="drop" data-val="3"><svg viewBox="0 0 24 24"><path d="M12 2.5s-7 8.5-7 13a7 7 0 1 0 14 0c0-4.5-7-13-7-13z"/></svg></div>
+      <div class="drop" data-val="4"><svg viewBox="0 0 24 24"><path d="M12 2.5s-7 8.5-7 13a7 7 0 1 0 14 0c0-4.5-7-13-7-13z"/></svg></div>
+      <div class="drop" data-val="5"><svg viewBox="0 0 24 24"><path d="M12 2.5s-7 8.5-7 13a7 7 0 1 0 14 0c0-4.5-7-13-7-13z"/></svg></div>
+      <div class="drop" data-val="6"><svg viewBox="0 0 24 24"><path d="M12 2.5s-7 8.5-7 13a7 7 0 1 0 14 0c0-4.5-7-13-7-13z"/></svg></div>
+    </div>
+    <div class="drops-label">~<span class="val" id="dropsVal">0</span> L bus aujourd'hui</div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">⚡</div>
+      <div class="card-titles">
+        <div class="card-label">Stress du jour</div>
+        <div class="card-helper">Niveau global ressenti</div>
+      </div>
+    </div>
+    <div class="slider-wrap">
+      <div class="slider-top">
+        <div class="slider-val"><span id="stressVal">5</span><span class="denom">/10</span></div>
+        <div class="slider-hint">Glisse pour ajuster</div>
+      </div>
+      <div class="slider-track">
+        <div class="slider-fill" id="stressFill"></div>
+        <input type="range" class="slider-input" id="stress" min="0" max="10" step="1" value="5">
+      </div>
+      <div class="slider-ticks">
+        <span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">🚬</div>
+      <div class="card-titles">
+        <div class="card-label">Tabac aujourd'hui</div>
+      </div>
+    </div>
+    <div class="btn-row cols-4">
+      <label class="btn-pill"><input type="radio" name="tabac" value="0" checked><div class="btn-pill-inner">0</div></label>
+      <label class="btn-pill"><input type="radio" name="tabac" value="1-2"><div class="btn-pill-inner">1-2</div></label>
+      <label class="btn-pill"><input type="radio" name="tabac" value="3-5"><div class="btn-pill-inner">3-5</div></label>
+      <label class="btn-pill"><input type="radio" name="tabac" value="5+"><div class="btn-pill-inner">5+</div></label>
+    </div>
+  </div>
+
+  <!-- SECTION CYCLE (visible uniquement pour les femmes) -->
+  <div class="card" id="cycleCard">
+    <div class="card-head">
+      <div class="card-icon">🌸</div>
+      <div class="card-titles">
+        <div class="card-label">Phase du cycle</div>
+      </div>
+    </div>
+    <div class="btn-row cols-5">
+      <label class="btn-pill"><input type="radio" name="cycle" value="Folliculaire"><div class="btn-pill-inner">Folli-<br>culaire</div></label>
+      <label class="btn-pill"><input type="radio" name="cycle" value="Ovulation"><div class="btn-pill-inner">Ovulation</div></label>
+      <label class="btn-pill"><input type="radio" name="cycle" value="Lutéale"><div class="btn-pill-inner">Lutéale</div></label>
+      <label class="btn-pill"><input type="radio" name="cycle" value="Règles"><div class="btn-pill-inner">Règles</div></label>
+      <label class="btn-pill"><input type="radio" name="cycle" value="Non suivi"><div class="btn-pill-inner">Non<br>suivi</div></label>
+    </div>
+  </div>
+
+  <!-- BILAN SEANCE -->
+  <div class="section-header">
+    <div class="section-tag">Bilan séance</div>
+    <h2 class="section-title">LE TRAVAIL DU JOUR</h2>
+    <p class="section-sub">Ce que tu as fait aujourd'hui.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">🏋️</div>
+      <div class="card-titles">
+        <div class="card-label">Activité du jour</div>
+        <div class="card-helper">Choisis-en une (plusieurs si journée chargée)</div>
+      </div>
+    </div>
+    <div class="activity-grid">
+      <label class="activity-card"><input type="checkbox" name="activity" value="Prog Coach Ron">
+        <div class="activity-card-inner">
+          <div class="activity-card-check"></div>
+          <div class="activity-card-name">PROG<br>COACH RON</div>
+          <div class="activity-card-sub">Séance du jour</div>
+          <div class="activity-card-bar bar-orange"></div>
+        </div>
+      </label>
+      <label class="activity-card"><input type="checkbox" name="activity" value="Rest Day">
+        <div class="activity-card-inner">
+          <div class="activity-card-check"></div>
+          <div class="activity-card-name">REST<br>DAY</div>
+          <div class="activity-card-sub">Repos</div>
+          <div class="activity-card-bar bar-gray"></div>
+        </div>
+      </label>
+      <label class="activity-card"><input type="checkbox" name="activity" value="Autres" id="activityAutres">
+        <div class="activity-card-inner">
+          <div class="activity-card-check"></div>
+          <div class="activity-card-name">AUTRES</div>
+          <div class="activity-card-sub">À détailler</div>
+          <div class="activity-card-bar bar-purple"></div>
+        </div>
+      </label>
+    </div>
+    
+    <!-- Textbox conditionnel pour "Autres" -->
+    <div class="conditional" id="autresBlock">
+      <div style="margin-top: 14px;">
+        <input type="text" id="autresDetail" placeholder="Décris ce que tu as fait (ex: jogging 45min, vélo, yoga...)">
+      </div>
+    </div>
+  </div>
+
+  <!-- CONDITIONNEL : TEMPS + RPE SI ACTIVITÉ -->
+  <div class="conditional" id="trainingBlock">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">⏱️</div>
+        <div class="card-titles">
+          <div class="card-label">Temps total d'entraînement</div>
+          <div class="card-helper">Volume du jour</div>
+        </div>
+      </div>
+      <div class="slider-wrap">
+        <div class="slider-top">
+          <div class="slider-val" id="durationLabel">1h00</div>
+          <div class="slider-hint">Glisse pour ajuster</div>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" id="durationFill"></div>
+          <input type="range" class="slider-input" id="duration" min="0" max="180" step="5" value="60">
+        </div>
+        <div class="slider-ticks">
+          <span>0</span><span>30</span><span>60</span><span>90</span><span>120</span><span>150</span><span>180</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon">🔥</div>
+        <div class="card-titles">
+          <div class="card-label">RPE physique séance</div>
+          <div class="card-helper">Effort perçu</div>
+        </div>
+      </div>
+      <div class="slider-wrap">
+        <div class="slider-top">
+          <div class="slider-val"><span id="rpeVal">7</span><span class="denom">/10</span></div>
+          <div class="slider-hint">Glisse pour ajuster</div>
+        </div>
+        <div class="slider-track">
+          <div class="slider-fill" id="rpeFill"></div>
+          <input type="range" class="slider-input" id="rpe" min="1" max="10" step="1" value="7">
+        </div>
+        <div class="slider-ticks">
+          <span>1</span><span>3</span><span>5</span><span>7</span><span>9</span><span>10</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">⚡</div>
+      <div class="card-titles">
+        <div class="card-label">Énergie - fin de journée</div>
+        <div class="card-helper">Ton niveau le soir</div>
+      </div>
+    </div>
+    <div class="segmented" data-segmented="energy" data-max="5" data-default="3">
+      <div class="segmented-value"><span class="num">3</span><span class="denom">/5</span></div>
+      <div class="segmented-bars">
+        <div class="segmented-bar" data-val="1"></div>
+        <div class="segmented-bar" data-val="2"></div>
+        <div class="segmented-bar" data-val="3"></div>
+        <div class="segmented-bar" data-val="4"></div>
+        <div class="segmented-bar" data-val="5"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">🧠</div>
+      <div class="card-titles">
+        <div class="card-label">RPE cognitif - journée</div>
+        <div class="card-helper">Charge mentale globale</div>
+      </div>
+    </div>
+    <div class="slider-wrap">
+      <div class="slider-top">
+        <div class="slider-val"><span id="cogRpeVal">5</span><span class="denom">/10</span></div>
+        <div class="slider-hint">Glisse pour ajuster</div>
+      </div>
+      <div class="slider-track">
+        <div class="slider-fill" id="cogRpeFill"></div>
+        <input type="range" class="slider-input" id="cogRpe" min="1" max="10" step="1" value="5">
+      </div>
+      <div class="slider-ticks">
+        <span>1</span><span>3</span><span>5</span><span>7</span><span>9</span><span>10</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-tag">Mot pour le coach</div>
+    <h2 class="section-title">UN MESSAGE POUR COACH <span class="accent">RON</span></h2>
+    <p class="section-sub">Sensations globales, questions, ce que tu veux faire passer.</p>
+  </div>
+  <div class="intro-box">
+    <textarea id="message" placeholder="Écris ici..."></textarea>
+  </div>
+
+  <div class="tip-box">
+    <div class="tip-icon">[+]</div>
+    <div class="tip-text">
+      <b>Astuce</b> : ajoute ce lien à ton écran d'accueil (menu navigateur, "Ajouter à l'écran d'accueil") pour l'ouvrir comme une vraie app, chaque jour.
+    </div>
+  </div>
+
+  <div class="app-footer">EASTBOX · COACH RON · DAILY TRACK</div>
+
+</div>
+
+<div class="submit-bar">
+  <button type="button" class="submit-btn" id="submitBtn">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+    ENVOYER MON BILAN
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONFIG COACH (numéro WhatsApp destinataire)
+// ═══════════════════════════════════════════════════════════════
+const COACH = {
+  name: "Coach Ron",
+  whatsapp: "262693200874"
+};
+
+// URL APPS SCRIPT - A REMPLACER apres deploiement
+// Format : https://script.google.com/macros/s/XXXXXXXXX/exec
+// Si vide, ecriture Sheets desactivee (WhatsApp continue)
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYXgB84G8T3CX_HTSfxgi3nKD4jefe1R8HlhG92rhYtUzq66jxeV50ZEi7ushR1qiM/exec";
+
+// ═══════════════════════════════════════════════════════════════
+// CONFIG ATHLÈTES — Ajouter de nouveaux athlètes ici
+// Format : "id-url" : { firstName, lastName, gender }
+// gender: "female" ou "male"
+// ═══════════════════════════════════════════════════════════════
+const ATHLETES = {
+  "angela-martin":       { firstName: "Angela",   lastName: "MARTIN",     gender: "female" },
+  "iris-gouyon":         { firstName: "Iris",     lastName: "GOUYON",     gender: "female" },
+  "anne-chermain":       { firstName: "Anne",     lastName: "CHERMAIN",   gender: "female" },
+  "anne-martineau":      { firstName: "Anne",     lastName: "MARTINEAU",  gender: "female" },
+  "johanna-barthelemy":  { firstName: "Johanna",  lastName: "BARTHELEMY", gender: "female" },
+  "mikaella-turpin":     { firstName: "Mikaella", lastName: "TURPIN",     gender: "female" },
+  "sarah-madi":          { firstName: "Sarah",    lastName: "MADI",       gender: "female" },
+  "julia-guilpin":       { firstName: "Julia",    lastName: "GUILPIN",    gender: "female" },
+  "ludovic-edmond":      { firstName: "Ludovic",  lastName: "EDMOND",     gender: "male" },
+  "brice-khoon-yam":     { firstName: "Brice",    lastName: "KHOON YAM",  gender: "male" },
+  "rhomuald-personne":   { firstName: "Rhomuald", lastName: "PERSONNE",   gender: "male" },
+  "thomas-eclapier":     { firstName: "Thomas",   lastName: "ECLAPIER",   gender: "male" },
+  "thibault-chagniot":   { firstName: "Thibault", lastName: "CHAGNIOT",   gender: "male" },
+  "anthony-chane-to":    { firstName: "Anthony",  lastName: "CHANE TO",   gender: "male" },
+  "kevin-sunnt":         { firstName: "Kevin",    lastName: "SUNNT",      gender: "male" },
+};
+
+// ═══════════════════════════════════════════════════════════════
+// LECTURE URL ?id=xxxxx
+// ═══════════════════════════════════════════════════════════════
+const params = new URLSearchParams(window.location.search);
+const athleteId = (params.get('id') || '').toLowerCase().trim();
+const athlete = ATHLETES[athleteId];
+
+if (!athlete) {
+  // Athlète non trouvé → afficher écran d'erreur
+  document.getElementById('errorScreen').classList.remove('hidden');
+  document.getElementById('mainApp').classList.add('hidden');
+} else {
+  // Athlète trouvé → adapter l'interface
+  initApp(athlete);
+}
+
+function initApp(ath) {
+  // Afficher l'app
+  document.getElementById('mainApp').classList.remove('hidden');
+  
+  // Adapter le titre
+  document.getElementById('athleteName').textContent = ath.firstName.toUpperCase();
+  document.title = `Tracking ${ath.firstName} · Eastbox`;
+  
+  // Adapter section cycle selon le genre
+  if (ath.gender !== 'female') {
+    document.getElementById('cycleCard').style.display = 'none';
+  }
+  
+  // Date du jour
+  document.getElementById('todayDate').textContent = formatDateFR(new Date());
+}
+
+function formatDateFR(date) {
+  const days = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  const months = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COMPOSANTS INTERACTIFS (seulement si athlète valide)
+// ═══════════════════════════════════════════════════════════════
+if (athlete) {
+
+// === COUNTER SOMMEIL ===
+let sleepHours = 7;
+const sleepVal = document.getElementById('sleepVal');
+document.getElementById('sleepMinus').addEventListener('click', () => {
+  if (sleepHours > 3) { sleepHours -= 0.5; sleepVal.textContent = sleepHours; }
+});
+document.getElementById('sleepPlus').addEventListener('click', () => {
+  if (sleepHours < 12) { sleepHours += 0.5; sleepVal.textContent = sleepHours; }
+});
+
+// === SEGMENTED SCALES ===
+document.querySelectorAll('[data-segmented]').forEach(container => {
+  const initial = parseInt(container.dataset.default);
+  const valSpan = container.querySelector('.num');
+  const bars = container.querySelectorAll('.segmented-bar');
+  function setValue(v) {
+    container.dataset.value = v;
+    valSpan.textContent = v;
+    bars.forEach((b, i) => b.classList.toggle('active', i < v));
+  }
+  setValue(initial);
+  bars.forEach(bar => bar.addEventListener('click', () => setValue(parseInt(bar.dataset.val))));
+});
+
+// === HYDRATATION DROPS ===
+let dropsCount = 0;
+const drops = document.querySelectorAll('.drop');
+const dropsValSpan = document.getElementById('dropsVal');
+function updateDropsLabel() { dropsValSpan.textContent = (dropsCount * 0.5).toFixed(1); }
+drops.forEach(d => {
+  d.addEventListener('click', () => {
+    const dropVal = parseInt(d.dataset.val);
+    if (dropsCount === dropVal) { dropsCount = dropVal - 1; }
+    else { dropsCount = dropVal; }
+    drops.forEach((dd, j) => dd.classList.toggle('active', j < dropsCount));
+    updateDropsLabel();
+  });
+});
+
+// === SLIDERS ===
+function setupSlider(inputId, valId, fillId) {
+  const slider = document.getElementById(inputId);
+  const val = valId ? document.getElementById(valId) : null;
+  const fill = document.getElementById(fillId);
+  const min = parseFloat(slider.min);
+  const max = parseFloat(slider.max);
+  function update() {
+    const v = parseFloat(slider.value);
+    const pct = ((v - min) / (max - min)) * 100;
+    fill.style.width = pct + '%';
+    if (val) val.textContent = v;
+  }
+  slider.addEventListener('input', update);
+  update();
+}
+setupSlider('stress', 'stressVal', 'stressFill');
+setupSlider('rpe', 'rpeVal', 'rpeFill');
+setupSlider('cogRpe', 'cogRpeVal', 'cogRpeFill');
+
+// === DURATION SLIDER ===
+function formatDuration(min) {
+  if (min === 0) return '0min';
+  if (min < 60) return min + 'min';
+  const h = Math.floor(min / 60);
+  const m = min % 60;
+  if (m === 0) return h + 'h00';
+  return h + 'h' + (m < 10 ? '0' + m : m);
+}
+const durationSlider = document.getElementById('duration');
+const durationLabel = document.getElementById('durationLabel');
+const durationFill = document.getElementById('durationFill');
+function updateDuration() {
+  const v = parseInt(durationSlider.value);
+  durationFill.style.width = ((v / 180) * 100) + '%';
+  durationLabel.textContent = formatDuration(v);
+}
+durationSlider.addEventListener('input', updateDuration);
+updateDuration();
+
+// === CONDITIONAL BLOCKS ===
+function updateBlocks() {
+  const checked = Array.from(document.querySelectorAll('input[name="activity"]:checked'));
+  const values = checked.map(c => c.value);
+  
+  // Bloc training (temps + RPE) : visible si Prog Coach Ron ou Autres
+  const hasTraining = values.includes('Prog Coach Ron') || values.includes('Autres');
+  document.getElementById('trainingBlock').classList.toggle('active', hasTraining);
+  
+  // Bloc "Autres" detail : visible si Autres coché
+  const hasAutres = values.includes('Autres');
+  document.getElementById('autresBlock').classList.toggle('active', hasAutres);
+}
+document.querySelectorAll('input[name="activity"]').forEach(cb => {
+  cb.addEventListener('change', updateBlocks);
+});
+
+// === TOAST ===
+function showToast(message, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = message;
+  t.classList.toggle('error', isError);
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// === SUBMIT ===
+document.getElementById('submitBtn').addEventListener('click', () => {
+  const data = {
+    intro: document.getElementById('intro').value.trim(),
+    sleepHours: sleepHours,
+    sleepQuality: document.querySelector('input[name="sleepQuality"]:checked')?.value,
+    wakeForm: document.querySelector('[data-segmented="wakeForm"]').dataset.value,
+    pain: document.getElementById('pain').value.trim(),
+    nutrition: document.querySelector('input[name="nutrition"]:checked')?.value,
+    hydration: dropsCount * 0.5,
+    stress: document.getElementById('stress').value,
+    tabac: document.querySelector('input[name="tabac"]:checked')?.value,
+    cycle: athlete.gender === 'female' ? document.querySelector('input[name="cycle"]:checked')?.value : null,
+    activities: Array.from(document.querySelectorAll('input[name="activity"]:checked')).map(c => c.value),
+    autresDetail: document.getElementById('autresDetail').value.trim(),
+    duration: parseInt(durationSlider.value),
+    rpe: document.getElementById('rpe').value,
+    energy: document.querySelector('[data-segmented="energy"]').dataset.value,
+    cogRpe: document.getElementById('cogRpe').value,
+    message: document.getElementById('message').value.trim(),
+  };
+  
+  if (data.activities.length === 0) {
+    showToast('Coche au moins une activité (ou Rest Day)', true);
+    return;
+  }
+  
+  const dateFR = formatDateFR(new Date());
+  const athleteFullName = `${athlete.firstName} ${athlete.lastName}`;
+  
+  let msg = `📊 *TRACKING ${athleteFullName.toUpperCase()}*\n_${dateFR}_\n`;
+  
+  if (data.intro) {
+    msg += `\n💬 *Avant tout*\n${data.intro}\n`;
+  }
+  
+  msg += `\n🌙 *Sommeil*\n`;
+  msg += `${data.sleepHours}h · Qualité : ${data.sleepQuality || '—'}\n`;
+  msg += `Forme réveil : ${data.wakeForm}/5\n`;
+  
+  if (data.pain) {
+    msg += `\n🩹 *Douleurs* : ${data.pain}\n`;
+  }
+  
+  msg += `\n🍴 *Nutrition* : ${data.nutrition || '—'}\n`;
+  msg += `💧 *Hydratation* : ~${data.hydration}L\n`;
+  msg += `\n⚡ *Stress* : ${data.stress}/10\n`;
+  msg += `🚬 *Tabac* : ${data.tabac} cig\n`;
+  if (data.cycle) msg += `🌸 *Cycle* : ${data.cycle}\n`;
+  
+  const hasTraining = data.activities.includes('Prog Coach Ron') || data.activities.includes('Autres');
+  
+  msg += `\n🏋️ *Activité du jour*\n${data.activities.join(' · ')}\n`;
+  if (data.activities.includes('Autres') && data.autresDetail) {
+    msg += `Détail Autres : ${data.autresDetail}\n`;
+  }
+  
+  if (hasTraining) {
+    msg += `Durée : ${formatDuration(data.duration)} · RPE physique : ${data.rpe}/10\n`;
+  }
+  
+  msg += `\n🔋 *Fin de journée*\n`;
+  msg += `Énergie : ${data.energy}/5 · RPE cognitif : ${data.cogRpe}/10\n`;
+  
+  if (data.message) {
+    msg += `\n📝 *Message coach*\n${data.message}\n`;
+  }
+  
+  // 1. Envoyer vers Google Sheets si configure
+  if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== "") {
+    try {
+      const payload = {
+        athleteId: athleteId,
+        sleepHours: data.sleepHours,
+        sleepQuality: data.sleepQuality,
+        wakeForm: data.wakeForm,
+        pain: data.pain,
+        nutrition: data.nutrition,
+        hydration: data.hydration,
+        stress: data.stress,
+        tabac: data.tabac,
+        cycle: data.cycle,
+        activities: data.activities,
+        autresDetail: data.autresDetail,
+        duration: hasTraining ? data.duration : 0,
+        rpe: hasTraining ? data.rpe : "",
+        energy: data.energy,
+        cogRpe: data.cogRpe,
+        intro: data.intro,
+        message: data.message
+      };
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).catch(err => console.warn("Sheets sync echoue:", err));
+    } catch (err) {
+      console.warn("Erreur Sheets sync:", err);
+    }
+  }
+  
+  // 2. Ouvrir WhatsApp
+  const url = `https://wa.me/${COACH.whatsapp}?text=${encodeURIComponent(msg)}`;
+  showToast('Bilan envoye - Ouverture WhatsApp...');
+  setTimeout(() => { window.location.href = url; }, 600);
+});
+
+} // fin if (athlete)
+</script>
+
+</body>
+</html>
