@@ -226,7 +226,7 @@ textarea, input[type="text"] {
 }
 textarea::placeholder, input[type="text"]::placeholder { color: var(--text-3); font-style: italic; }
 textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--orange); }
-.activity-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.activity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .activity-card { position: relative; cursor: pointer; }
 .activity-card input { position: absolute; opacity: 0; pointer-events: none; }
 .activity-card-inner {
@@ -521,8 +521,11 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--or
         <div class="card-label">Tabac aujourd'hui</div>
       </div>
     </div>
+    <div class="btn-row" style="grid-template-columns: 1fr; margin-bottom: 8px;">
+      <label class="btn-pill"><input type="radio" name="tabac" value="Je ne fume pas" checked><div class="btn-pill-inner">Je ne fume pas</div></label>
+    </div>
     <div class="btn-row cols-4">
-      <label class="btn-pill"><input type="radio" name="tabac" value="0" checked><div class="btn-pill-inner">0</div></label>
+      <label class="btn-pill"><input type="radio" name="tabac" value="0"><div class="btn-pill-inner">0</div></label>
       <label class="btn-pill"><input type="radio" name="tabac" value="1-2"><div class="btn-pill-inner">1-2</div></label>
       <label class="btn-pill"><input type="radio" name="tabac" value="3-5"><div class="btn-pill-inner">3-5</div></label>
       <label class="btn-pill"><input type="radio" name="tabac" value="5+"><div class="btn-pill-inner">5+</div></label>
@@ -566,8 +569,16 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--or
         <div class="activity-card-inner">
           <div class="activity-card-check"></div>
           <div class="activity-card-name">PROG<br>COACH RON</div>
-          <div class="activity-card-sub">Séance du jour</div>
+          <div class="activity-card-sub">Séance individualisée</div>
           <div class="activity-card-bar bar-orange"></div>
+        </div>
+      </label>
+      <label class="activity-card"><input type="checkbox" name="activity" value="Prog Salle EASTBOX">
+        <div class="activity-card-inner">
+          <div class="activity-card-check"></div>
+          <div class="activity-card-name">PROG SALLE<br>EASTBOX</div>
+          <div class="activity-card-sub">Séance collective</div>
+          <div class="activity-card-bar bar-green"></div>
         </div>
       </label>
       <label class="activity-card"><input type="checkbox" name="activity" value="Rest Day">
@@ -887,7 +898,7 @@ function updateBlocks() {
   const values = checked.map(c => c.value);
   
   // Bloc training (temps + RPE) : visible si Prog Coach Ron ou Autres
-  const hasTraining = values.includes('Prog Coach Ron') || values.includes('Autres');
+  const hasTraining = values.includes('Prog Coach Ron') || values.includes('Prog Salle EASTBOX') || values.includes('Autres');
   document.getElementById('trainingBlock').classList.toggle('active', hasTraining);
   
   // Bloc "Autres" detail : visible si Autres coché
@@ -957,7 +968,7 @@ document.getElementById('submitBtn').addEventListener('click', () => {
   msg += `🚬 *Tabac* : ${data.tabac} cig\n`;
   if (data.cycle) msg += `🌸 *Cycle* : ${data.cycle}\n`;
   
-  const hasTraining = data.activities.includes('Prog Coach Ron') || data.activities.includes('Autres');
+  const hasTraining = data.activities.includes('Prog Coach Ron') || data.activities.includes('Prog Salle EASTBOX') || data.activities.includes('Autres');
   
   msg += `\n🏋️ *Activité du jour*\n${data.activities.join(' · ')}\n`;
   if (data.activities.includes('Autres') && data.autresDetail) {
