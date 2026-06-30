@@ -377,6 +377,14 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--or
   </div>
 </header>
 
+<!-- BANNIERE : afficher si deja soumis aujourdhui -->
+<div id="updateBanner" style="display: none; background: var(--orange-soft); border-bottom: 1px solid var(--orange); padding: 12px 16px; text-align: center;">
+  <div style="max-width: 540px; margin: 0 auto; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+    <span style="font-size: 16px;">✓</span>
+    <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 1px; color: var(--orange); text-transform: uppercase; font-weight: 600;">Bilan déjà envoyé à <span id="updateBannerTime">—</span> · Modification possible</span>
+  </div>
+</div>
+
 <div class="container">
 
   <!-- INTRO -->
@@ -724,7 +732,7 @@ textarea:focus, input[type="text"]:focus { outline: none; border-color: var(--or
     <svg viewBox="0 0 24 24" fill="currentColor">
       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
     </svg>
-    ENVOYER MON BILAN
+    <span id="submitBtnText">ENVOYER MON BILAN</span>
   </button>
 </div>
 
@@ -800,6 +808,165 @@ function initApp(ath) {
   
   // Date du jour
   document.getElementById('todayDate').textContent = formatDateFR(new Date());
+  
+  // Verifier si l'athlete a deja envoye son bilan aujourd'hui (pre-remplissage)
+  checkTodaySubmission();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CHECK / PREFILL : Verifier si deja soumis aujourd'hui
+// ═══════════════════════════════════════════════════════════════
+async function checkTodaySubmission() {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.trim() === "") return;
+  
+  try {
+    const url = APPS_SCRIPT_URL + "?athlete=" + encodeURIComponent(athleteId) + "&date=today";
+    const res = await fetch(url);
+    if (!res.ok) return;
+    const json = await res.json();
+    
+    if (json.status === "ok" && json.alreadySubmitted && json.data) {
+      // Bilan deja soumis aujourd'hui : pre-remplir + changer le bouton
+      prefillForm(json.data);
+      showUpdateBanner(json.data.horodatage);
+      document.getElementById('submitBtnText').textContent = "MODIFIER MON BILAN";
+      window._isUpdate = true;
+    }
+  } catch (err) {
+    console.warn("Check today submission failed:", err);
+    // Pas grave : on continue en mode "nouvelle soumission"
+  }
+}
+
+function showUpdateBanner(horodatageISO) {
+  try {
+    const d = new Date(horodatageISO);
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    document.getElementById('updateBannerTime').textContent = hh + ":" + mm;
+    document.getElementById('updateBanner').style.display = 'block';
+  } catch (err) {
+    document.getElementById('updateBanner').style.display = 'block';
+  }
+}
+
+function prefillForm(d) {
+  // 1. Sommeil heures (counter)
+  if (d.sleepHours) {
+    sleepHours = Number(d.sleepHours);
+    document.getElementById('sleepVal').textContent = sleepHours;
+  }
+  
+  // 2. Qualite sommeil (radio)
+  if (d.sleepQuality) {
+    const r = document.querySelector('input[name="sleepQuality"][value="' + d.sleepQuality + '"]');
+    if (r) r.checked = true;
+  }
+  
+  // 3. Forme reveil (segmented /5)
+  if (d.wakeForm) {
+    const container = document.querySelector('[data-segmented="wakeForm"]');
+    if (container) {
+      const valNum = Number(d.wakeForm);
+      container.dataset.value = valNum;
+      container.querySelector('.num').textContent = valNum;
+      container.querySelectorAll('.segmented-bar').forEach(function(b, i) {
+        b.classList.toggle('active', i < valNum);
+      });
+    }
+  }
+  
+  // 4. Douleurs (text)
+  if (d.pain) document.getElementById('pain').value = d.pain;
+  
+  // 5. Nutrition (radio)
+  if (d.nutrition) {
+    const r = document.querySelector('input[name="nutrition"][value="' + d.nutrition + '"]');
+    if (r) r.checked = true;
+  }
+  
+  // 6. Hydratation (gouttes)
+  if (d.hydration) {
+    dropsCount = Math.round(Number(d.hydration) / 0.5);
+    const dropsEls = document.querySelectorAll('.drop');
+    dropsEls.forEach(function(dd, j) {
+      dd.classList.toggle('active', j < dropsCount);
+    });
+    document.getElementById('dropsVal').textContent = (dropsCount * 0.5).toFixed(1);
+  }
+  
+  // 7. Stress (slider)
+  if (d.stress !== undefined && d.stress !== "") {
+    const sl = document.getElementById('stress');
+    sl.value = d.stress;
+    sl.dispatchEvent(new Event('input'));
+  }
+  
+  // 8. Tabac (radio)
+  if (d.tabac) {
+    const r = document.querySelector('input[name="tabac"][value="' + CSS.escape(String(d.tabac)) + '"]');
+    if (r) r.checked = true;
+  }
+  
+  // 9. Cycle (radio)
+  if (d.cycle) {
+    const r = document.querySelector('input[name="cycle"][value="' + d.cycle + '"]');
+    if (r) r.checked = true;
+  }
+  
+  // 10. Activites (checkbox - peut etre plusieurs separes par " + ")
+  if (d.activities) {
+    const activitiesArr = String(d.activities).split(" + ").map(function(a) { return a.trim(); });
+    activitiesArr.forEach(function(act) {
+      const cb = document.querySelector('input[name="activity"][value="' + CSS.escape(act) + '"]');
+      if (cb) cb.checked = true;
+    });
+    // Declencher la mise a jour des blocs conditionnels
+    updateBlocks();
+  }
+  
+  // 11. Detail autres (text)
+  if (d.autresDetail) document.getElementById('autresDetail').value = d.autresDetail;
+  
+  // 12. Duree (slider)
+  if (d.duration !== undefined && d.duration !== "") {
+    const sl = document.getElementById('duration');
+    sl.value = d.duration;
+    sl.dispatchEvent(new Event('input'));
+  }
+  
+  // 13. RPE physique (slider)
+  if (d.rpe !== undefined && d.rpe !== "") {
+    const sl = document.getElementById('rpe');
+    sl.value = d.rpe;
+    sl.dispatchEvent(new Event('input'));
+  }
+  
+  // 14. Energie (segmented /5)
+  if (d.energy) {
+    const container = document.querySelector('[data-segmented="energy"]');
+    if (container) {
+      const valNum = Number(d.energy);
+      container.dataset.value = valNum;
+      container.querySelector('.num').textContent = valNum;
+      container.querySelectorAll('.segmented-bar').forEach(function(b, i) {
+        b.classList.toggle('active', i < valNum);
+      });
+    }
+  }
+  
+  // 15. RPE cognitif (slider)
+  if (d.cogRpe !== undefined && d.cogRpe !== "") {
+    const sl = document.getElementById('cogRpe');
+    sl.value = d.cogRpe;
+    sl.dispatchEvent(new Event('input'));
+  }
+  
+  // 16. Intro (textarea)
+  if (d.intro) document.getElementById('intro').value = d.intro;
+  
+  // 17. Message coach (textarea)
+  if (d.message) document.getElementById('message').value = d.message;
 }
 
 function formatDateFR(date) {
@@ -948,7 +1115,8 @@ document.getElementById('submitBtn').addEventListener('click', () => {
   const dateFR = formatDateFR(new Date());
   const athleteFullName = `${athlete.firstName} ${athlete.lastName}`;
   
-  let msg = `📊 *TRACKING ${athleteFullName.toUpperCase()}*\n_${dateFR}_\n`;
+  const titlePrefix = window._isUpdate ? "🔄 *BILAN MODIFIÉ" : "📊 *TRACKING";
+  let msg = titlePrefix + " " + athleteFullName.toUpperCase() + "*\n_" + dateFR + "_\n";
   
   if (data.intro) {
     msg += `\n💬 *Avant tout*\n${data.intro}\n`;
@@ -986,7 +1154,12 @@ document.getElementById('submitBtn').addEventListener('click', () => {
     msg += `\n📝 *Message coach*\n${data.message}\n`;
   }
   
-  // 1. Envoyer vers Google Sheets si configure
+  // === ETAPE 1 : Construire URL WhatsApp en premier ===
+  const url = `https://wa.me/${COACH.whatsapp}?text=${encodeURIComponent(msg)}`;
+  
+  // === ETAPE 2 : Envoyer vers Google Sheets (fire-and-forget) ===
+  // Le flag keepalive:true permet a la requete de continuer apres la navigation
+  // Crucial sur iOS Safari : sans ca, la requete serait annulee par la nav vers WhatsApp
   if (APPS_SCRIPT_URL && APPS_SCRIPT_URL.trim() !== "") {
     try {
       const payload = {
@@ -1013,17 +1186,17 @@ document.getElementById('submitBtn').addEventListener('click', () => {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        keepalive: true
       }).catch(err => console.warn("Sheets sync echoue:", err));
     } catch (err) {
       console.warn("Erreur Sheets sync:", err);
     }
   }
   
-  // 2. Ouvrir WhatsApp
-  const url = `https://wa.me/${COACH.whatsapp}?text=${encodeURIComponent(msg)}`;
-  showToast('Bilan envoye - Ouverture WhatsApp...');
-  setTimeout(() => { window.location.href = url; }, 600);
+  // === ETAPE 3 : Naviguer IMMEDIATEMENT vers WhatsApp ===
+  // SANS setTimeout : reste dans le user gesture pour passer Safari iOS strict
+  window.location.href = url;
 });
 
 } // fin if (athlete)
